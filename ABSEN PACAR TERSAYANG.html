@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ABSENSI PACARKU</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  body{font-family:'Outfit',sans-serif}
+ .glass{backdrop-filter:blur(16px); background:rgba(255,255,255,0.85)}
+ .dark.glass{background:rgba(24,24,27,0.85)}
+</style>
+</head>
+<body class="bg-[#f5f5f7] dark:bg-zinc-900 min-h-screen p-4 transition">
+<div class="max-w-4xl mx-auto">
+
+  <div class="glass rounded-[2rem] p-6 shadow-xl flex justify-between items-center mt-4">
+    <div>
+      <h1 class="text-3xl font-bold">Absensi harian ✨</h1>
+      <p id="tanggal" class="text-zinc-500"></p>
+    </div>
+    <div class="flex gap-2">
+      <button onclick="toggleDark()" class="w-10 h-10 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-black">◐</button>
+      <button onclick="exportCSV()" class="px-4 py-2 rounded-full bg-black text-white font-semibold">Export Excel</button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-4 gap-3 mt-6">
+    <div class="glass rounded-2xl p-4 text-center"><p class="text-2xl font-bold" id="hadir">0</p><p class="text-xs">Hadir</p></div>
+    <div class="glass rounded-2xl p-4 text-center"><p class="text-2xl font-bold" id="sakit">0</p><p class="text-xs">Sakit</p></div>
+    <div class="glass rounded-2xl p-4 text-center"><p class="text-2xl font-bold" id="izin">0</p><p class="text-xs">Izin</p></div>
+    <div class="glass rounded-2xl p-4 text-center"><p class="text-2xl font-bold" id="alpa">0</p><p class="text-xs">Alpa</p></div>
+  </div>
+
+  <input id="search" onkeyup="render()" placeholder="Cari nama siswa..." class="w-full mt-6 px-5 py-4 rounded-2xl border-none shadow-sm outline-none">
+
+  <div id="list" class="mt-4 space-y-3"></div>
+</div>
+
+<script>
+const siswa = ["Ameng Cantik","Doraaa"];
+
+let data = JSON.parse(localStorage.getItem('absen10A') || '{}');
+document.getElementById('tanggal').innerText = new Date().toLocaleDateString('id-ID',{weekday:'long', day:'numeric', month:'long', year:'numeric'});
+
+function render(){
+  const q = document.getElementById('search').value.toLowerCase();
+  const list = document.getElementById('list');
+  list.innerHTML = '';
+  let h=0,s=0,i=0,a=0;
+  siswa.filter(n=>n.toLowerCase().includes(q)).forEach((nama,idx)=>{
+    const st = data[nama] || 'hadir sayang';
+    if(st=='hadir sayang')h++; if(st=='ga enak badan sayangg ')s++; if(st=='izin sayang')i++; if(st=='alpa')a++;
+    list.innerHTML += `
+      <div class="glass rounded-2xl p-4 flex justify-between items-center shadow-sm">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-pink-500 text-white flex items-center justify-center font-bold">${nama[0]}</div>
+          <p class="font-semibold">${nama}</p>
+        </div>
+        <select onchange="setStatus('${nama}',this.value)" class="px-3 py-2 rounded-full text-sm font-bold
+          ${st=='hadir sayang'?'bg-green-100 text-green-700':''}
+          ${st=='ga enak badan sayangg '?'bg-yellow-100 text-yellow-700':''}
+          ${st=='izin sayang'?'bg-blue-100 text-blue-700':''}
+          ${st=='alpa'?'bg-red-100 text-red-700':''}">
+          <option value="hadir sayang" ${st=='hadir sayang'?'selected':''}>Hadir</option>
+          <option value="ga enak badan sayangg " ${st=='ga enak badan sayangg '?'selected':''}>Sakit</option>
+          <option value="izin sayang" ${st=='izin sayang'?'selected':''}>Izin</option>
+          <option value="alpa" ${st=='alpa'?'selected':''}>Alpa</option>
+        </select>
+      </div>`;
+  });
+  document.getElementById('hadir sayang').innerText=h;
+  document.getElementById('ga enak badan sayangg ').innerText=s;
+  document.getElementById('izin sayang').innerText=i;
+  document.getElementById('alpa').innerText=a;
+}
+function setStatus(nama,val){data[nama]=val; localStorage.setItem('absen10A',JSON.stringify(data)); render();}
+function exportCSV(){
+  let csv="Nama,Status,Tanggal\n";
+  siswa.forEach(n=>{csv+=`${n},${data[n]||'hadir'},${new Date().toLocaleDateString()}\n`});
+  const a=document.createElement('a'); a.href='data:text/csv,'+encodeURI(csv); a.download=`absen-10A-${Date.now()}.csv`; a.click();
+}
+function toggleDark(){document.documentElement.classList.toggle('dark');}
+render();
+</script>
+</body>
+</html>
