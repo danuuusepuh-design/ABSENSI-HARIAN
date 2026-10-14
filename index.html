@@ -22,7 +22,7 @@
     </div>
     <div class="flex gap-2">
       <button onclick="toggleDark()" class="w-10 h-10 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-black">◐</button>
-      <button onclick="exportCSV()" class="px-4 py-2 rounded-full bg-black text-white font-semibold">Export Excel</button>
+      <button onclick="exportCSV()" class="px-4 py-2 rounded-full bg-black text-white font-semibold">Export pelaminan</button>
     </div>
   </div>
 
@@ -33,7 +33,7 @@
     <div class="glass rounded-2xl p-4 text-center"><p class="text-2xl font-bold" id="alpa">0</p><p class="text-xs">Alpa</p></div>
   </div>
 
-  <input id="search" onkeyup="render()" placeholder="Cari nama siswa..." class="w-full mt-6 px-5 py-4 rounded-2xl border-none shadow-sm outline-none">
+  <input id="search" onkeyup="render()" placeholder="Cari nama pacar..." class="w-full mt-6 px-5 py-4 rounded-2xl border-none shadow-sm outline-none">
 
   <div id="list" class="mt-4 space-y-3"></div>
 </div>
@@ -50,8 +50,8 @@ function render(){
   list.innerHTML = '';
   let h=0,s=0,i=0,a=0;
   siswa.filter(n=>n.toLowerCase().includes(q)).forEach((nama,idx)=>{
-    const st = data[nama] || 'hadir sayang';
-    if(st=='hadir sayang')h++; if(st=='ga enak badan sayangg ')s++; if(st=='izin sayang')i++; if(st=='alpa')a++;
+    const st = data[nama] || 'hadir';
+    if(st=='hadir')h++; if(st=='sakit')s++; if(st=='izin')i++; if(st=='alpa')a++;
     list.innerHTML += `
       <div class="glass rounded-2xl p-4 flex justify-between items-center shadow-sm">
         <div class="flex items-center gap-3">
@@ -59,20 +59,20 @@ function render(){
           <p class="font-semibold">${nama}</p>
         </div>
         <select onchange="setStatus('${nama}',this.value)" class="px-3 py-2 rounded-full text-sm font-bold
-          ${st=='hadir sayang'?'bg-green-100 text-green-700':''}
-          ${st=='ga enak badan sayangg '?'bg-yellow-100 text-yellow-700':''}
-          ${st=='izin sayang'?'bg-blue-100 text-blue-700':''}
+          ${st=='hadir?'bg-green-100 text-green-700':''}
+          ${st=='sakit'?'bg-yellow-100 text-yellow-700':''}
+          ${st=='izin'?'bg-blue-100 text-blue-700':''}
           ${st=='alpa'?'bg-red-100 text-red-700':''}">
-          <option value="hadir sayang" ${st=='hadir sayang'?'selected':''}>Hadir</option>
-          <option value="ga enak badan sayangg " ${st=='ga enak badan sayangg '?'selected':''}>Sakit</option>
-          <option value="izin sayang" ${st=='izin sayang'?'selected':''}>Izin</option>
+          <option value="hadir" ${st=='hadir sayang'?'selected':''}>Hadir</option>
+          <option value="sakit" ${st=='ga enak badan sayangg '?'selected':''}>Sakit</option>
+          <option value="izin ${st=='izin sayang'?'selected':''}>Izin</option>
           <option value="alpa" ${st=='alpa'?'selected':''}>Alpa</option>
         </select>
       </div>`;
   });
-  document.getElementById('hadir sayang').innerText=h;
-  document.getElementById('ga enak badan sayangg ').innerText=s;
-  document.getElementById('izin sayang').innerText=i;
+  document.getElementById('hadir').innerText=h;
+  document.getElementById('sakit').innerText=s;
+  document.getElementById('izin').innerText=i;
   document.getElementById('alpa').innerText=a;
 }
 function setStatus(nama,val){data[nama]=val; localStorage.setItem('absen10A',JSON.stringify(data)); render();}
